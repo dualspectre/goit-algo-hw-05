@@ -1,2 +1,2 @@
-.\logger\logs.txt
-.\logger\__pycache__
+logger/logs.txt
+logger/__pycache__/*
