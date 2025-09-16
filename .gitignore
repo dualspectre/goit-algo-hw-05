@@ -1,2 +1,3 @@
-logger\logs.txt
-logger\__pycache__\
+logs.txt
+__pycache__/
+*.pyc
