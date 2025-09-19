@@ -3,15 +3,19 @@ import re
 # Regular expression pattern for validating phone numbers
 pattern = r"^[+]?\d{9,12}$"
 
-# Decorator for handling input errors in function parse_input
+# Decorator for handling input errors
 def input_error(func):
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except ValueError:
-            print("No command entered. Please enter the command correctly.\
-                  \nDetails: add <name> <phone>, change <name> <phone>, phone <name>")
-            return "", ""
+            return "Give me name and phone please."
+        except IndexError:
+            return "Not enough arguments provided."
+        except KeyError:
+            return "Contact not found."
+        except Exception as e:
+            return f"An unexpected error occurred: {e}"
     return inner
 
 #function of parsing user input command
@@ -23,15 +27,6 @@ def parse_input(user_input):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
     return cmd, *args
-
-# Decorator for handling input errors in function add_contact
-def input_error(func):
-    def inner(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except ValueError:
-            return "Usage: add <name> <phone>"
-    return inner
 
 #function of adding a contact
 @input_error
@@ -53,17 +48,6 @@ def add_contact(args, contacts: dict) -> str:
     else:
         return "Invalid phone number format. Please use a valid format (9-12 digits)."
 
-# Decorator for handling input errors in function change_contact
-def input_error(func):
-    def inner(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except ValueError:
-            return "Usage: change <name> <phone>"
-        except KeyError:
-            return "Contact not found."
-    return inner
-
 #function of changing a contact
 @input_error
 def change_contact(args, contacts: dict) -> str:
@@ -83,18 +67,8 @@ def change_contact(args, contacts: dict) -> str:
             contacts[name] = phone
             return "Contact changed."
     else:
-        return "Invalid phone number format. Please use a valid format (9-12 digits)."
+        raise ValueError
 
-# Decorator for handling input errors in function show_phone_number
-def input_error(func):
-    def inner(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except (ValueError, IndexError):
-            return "Usage: phone <name>"
-        except KeyError:
-            return "Contact not found."
-    return inner
 
 #function of showing a contact's phone number
 @input_error
